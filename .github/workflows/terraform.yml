@@ -16,13 +16,17 @@ on:
         required: true
 
 jobs:
-  terraform:
+  infrastructure:
     name: Terraform CI/CD
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read
+        contents: read
 
+    defaults:
+        run:
+          working-directory: ./terraform/infra
+  
     steps:
       # Step 1: Check out the code
       - name: Checkout code
