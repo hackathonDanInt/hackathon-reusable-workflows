@@ -25,7 +25,7 @@ jobs:
 
     defaults:
         run:
-          working-directory: terraform/infra
+          working-directory: ./terraform/infra
   
     steps:
       # Step 1: Check out the code
@@ -57,14 +57,14 @@ jobs:
         run: terraform plan -out=tfplan
 
       # Step 7: Upload Plan File as an Artifact (for pull requests)
-      - name: Upload Plan Artifact
-        if: github.event_name == 'pull_request'
-        uses: actions/upload-artifact@v3
-        with:
-          name: terraform-plan
-          path: ./tfplan
+    #   - name: Upload Plan Artifact
+    #     if: github.event_name == 'pull_request'
+    #     uses: actions/upload-artifact@v3
+    #     with:
+    #       name: terraform-plan
+    #       path: ./tfplan
 
       # Step 8: Terraform Apply (only for pushes to main)
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve tfplan
+    #   - name: Terraform Apply
+    #     if: github.ref == 'refs/heads/main'
+    #     run: terraform apply -auto-approve tfplan
