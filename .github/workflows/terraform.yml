@@ -1,0 +1,67 @@
+name: Terraform Reusable Workflow
+
+on:
+  workflow_call:
+    inputs:
+      terraform_version:
+        description: 'The version of Terraform to use'
+        required: true
+        type: string
+    secrets:
+      AWS_ACCESS_KEY_ID:
+        description: 'AWS Access Key ID'
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        description: 'AWS Secret Access Key'
+        required: true
+
+jobs:
+  terraform:
+    name: Terraform CI/CD
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      # Step 1: Check out the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Terraform
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ inputs.terraform_version }}
+
+      # Step 3: Initialize Terraform
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      # Step 4: Terraform Format Check (Optional)
+      - name: Terraform Format
+        run: terraform fmt -check -recursive
+
+      # Step 5: Terraform Validate
+      - name: Terraform Validate
+        run: terraform validate
+
+      # Step 6: Terraform Plan
+      - name: Terraform Plan
+        id: plan
+        run: terraform plan -out=tfplan
+
+      # Step 7: Upload Plan File as an Artifact (for pull requests)
+      - name: Upload Plan Artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-plan
+          path: ./tfplan
+
+      # Step 8: Terraform Apply (only for pushes to main)
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve tfplan
