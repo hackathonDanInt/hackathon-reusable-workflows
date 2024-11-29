@@ -14,10 +14,13 @@ on:
       AWS_SECRET_ACCESS_KEY:
         description: 'AWS Secret Access Key'
         required: true
+      TF_CLOUD_TOKEN:
+          description: 'Terraform Cloud Token'
+          required: true
 
 jobs:
   infrastructure:
-    name: Terraform CI/CD
+    name: Deploy Infrastructure
     runs-on: ubuntu-latest
 
     permissions:
@@ -38,12 +41,15 @@ jobs:
         with:
           terraform_version: ${{ inputs.terraform_version }}
 
+      - name: Set Terraform Cloud Token
+        run: echo "TF_CLOUD_TOKEN=${{ secrets.TF_CLOUD_TOKEN }}" >> $GITHUB_ENV
+
       # Step 3: Initialize Terraform
       - name: Terraform Init
         id: init
         run: terraform init
 
-      # Step 4: Terraform Format Check (Optional)
+      # Step 4: Terraform Format Check
       - name: Terraform Format
         run: terraform fmt -check -recursive
 
