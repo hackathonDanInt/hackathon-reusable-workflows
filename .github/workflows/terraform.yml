@@ -17,6 +17,9 @@ on:
       TF_CLOUD_TOKEN:
           description: 'Terraform Cloud Token'
           required: true
+      OAUTH_TOKEN_ID:
+          description: 'OAUTH Token ID'
+          required: true
 
 jobs:
   infrastructure:
