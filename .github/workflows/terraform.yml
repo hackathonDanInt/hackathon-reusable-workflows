@@ -52,7 +52,7 @@ jobs:
         env:
           TF_CLOUD_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}
         run: |
-          echo "credentials\"app.terraform.io\" { token = \"TF_CLOUD_TOKEN\"}" > ~/.terraformrc
+          echo "credentials \"app.terraform.io\" { token = \"$TF_CLOUD_TOKEN\"}" > ~/.terraformrc
 
       # Step 3: Initialize Terraform
       - name: Terraform Init
