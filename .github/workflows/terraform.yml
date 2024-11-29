@@ -47,6 +47,13 @@ jobs:
       # - name: Set Terraform Cloud Token
       #   run: echo "TF_CLOUD_TOKEN=${{ secrets.TF_CLOUD_TOKEN }}" >> $GITHUB_ENV
 
+      - name: Echo terraformrc file
+        shell: bash
+        env:
+          TF_CLOUD_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}
+        run: |
+          echo "credentials\"app.terraform.io\" { token = \"TF_CLOUD_TOKEN\"}" > ~/.terraformrc
+
       # Step 3: Initialize Terraform
       - name: Terraform Init
         id: init
