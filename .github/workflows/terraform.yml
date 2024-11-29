@@ -7,6 +7,10 @@ on:
         description: 'The version of Terraform to use'
         required: true
         type: string
+      working-directory:
+        description: 'The working directory for Terraform commands'
+        required: true
+        type: string
     secrets:
       AWS_ACCESS_KEY_ID:
         description: 'AWS Access Key ID'
@@ -19,8 +23,8 @@ on:
           required: true
 
 jobs:
-  infrastructure:
-    name: Deploy Infrastructure
+  tf-executor:
+    name: Execute Terraform
     runs-on: ubuntu-latest
 
     env:
@@ -33,7 +37,7 @@ jobs:
 
     defaults:
         run:
-          working-directory: ./terraform/infra
+          working-directory: ${{ inputs.working-directory }}
   
     steps:
       # Step 1: Check out the code
@@ -45,9 +49,6 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ inputs.terraform_version }}
-
-      # - name: Set Terraform Cloud Token
-      #   run: echo "TF_CLOUD_TOKEN=${{ secrets.TF_CLOUD_TOKEN }}" >> $GITHUB_ENV
 
       - name: Echo terraformrc file
         shell: bash
@@ -83,6 +84,6 @@ jobs:
     #       path: ./tfplan
 
       # Step 8: Terraform Apply (only for pushes to main)
-    #   - name: Terraform Apply
-    #     if: github.ref == 'refs/heads/main'
-    #     run: terraform apply -auto-approve tfplan
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve tfplan
