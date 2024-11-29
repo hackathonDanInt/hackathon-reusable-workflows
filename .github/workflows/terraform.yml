@@ -17,14 +17,14 @@ on:
       TF_CLOUD_TOKEN:
           description: 'Terraform Cloud Token'
           required: true
-      OAUTH_TOKEN_ID:
-          description: 'OAUTH Token ID'
-          required: true
 
 jobs:
   infrastructure:
     name: Deploy Infrastructure
     runs-on: ubuntu-latest
+
+    env:
+      TF_CLOUD_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}
 
     permissions:
         contents: read
@@ -44,8 +44,8 @@ jobs:
         with:
           terraform_version: ${{ inputs.terraform_version }}
 
-      - name: Set Terraform Cloud Token
-        run: echo "TF_CLOUD_TOKEN=${{ secrets.TF_CLOUD_TOKEN }}" >> $GITHUB_ENV
+      # - name: Set Terraform Cloud Token
+      #   run: echo "TF_CLOUD_TOKEN=${{ secrets.TF_CLOUD_TOKEN }}" >> $GITHUB_ENV
 
       # Step 3: Initialize Terraform
       - name: Terraform Init
