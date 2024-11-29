@@ -72,7 +72,7 @@ jobs:
       # Step 6: Terraform Plan
       - name: Terraform Plan
         id: plan
-        run: terraform plan -out=tfplan
+        run: terraform plan
 
       # Step 7: Upload Plan File as an Artifact (for pull requests)
     #   - name: Upload Plan Artifact
